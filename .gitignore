@@ -1,0 +1,17 @@
+# Frontend
+frontend/web/node_modules/
+frontend/web/dist/
+
+# Backend
+backend/**/bin/
+backend/**/obj/
+
+# Visual Studio
+.vs/
+
+# VSCode
+.vscode/
+
+# Environment
+.env
+.env.*
