@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { createCustomer } from '@/api/customerApi'
 import type { ValidationErrors } from '@/types/validation'
 import CustomerForm from '@/components/customers/CustomerForm.vue'
+import axios from 'axios'
 
 const router = useRouter()
 
@@ -29,12 +30,13 @@ const save = async () => {
       email: email.value,
     })
 
-    //await router.push('/customers')
-  } catch (error: any) {
-    if (error.response?.status === 400) {
-      validationErrors.value = error.response.data.errors ?? {}
-
-      return
+    await router.push('/customers')
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 400) {
+        validationErrors.value = error.response.data.errors ?? {}
+        return
+      }
     }
 
     alert('登録に失敗しました')

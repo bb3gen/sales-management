@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { getCustomers, deleteCustomer, type Customer } from '@/api/customerApi'
+import { getCustomers, deleteCustomer } from '@/api/customerApi'
+import type { Customer } from '@/types/customers/customer'
 
 const customers = ref<Customer[]>([])
 

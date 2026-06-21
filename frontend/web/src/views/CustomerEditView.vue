@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { ValidationErrors } from '@/types/validation'
+import axios from 'axios'
 
 import CustomerForm from '@/components/customers/CustomerForm.vue'
 import { getCustomer, updateCustomer } from '@/api/customerApi'
@@ -47,16 +48,18 @@ const save = async () => {
     })
 
     await router.push('/customers')
-  } catch (error: any) {
-    if (error.response?.status === 409) {
-      alert(error.response.data.message)
-      return
-    }
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 409) {
+        alert(error.response.data.message)
+        return
+      }
 
-    if (error.response?.status === 400) {
-      validationErrors.value = error.response.data.errors ?? {}
+      if (error.response?.status === 400) {
+        validationErrors.value = error.response.data.errors ?? {}
 
-      return
+        return
+      }
     }
 
     alert('更新に失敗しました')
