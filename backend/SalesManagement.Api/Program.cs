@@ -7,8 +7,14 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 
 using SalesManagement.Api.Infrastructure.Persistence;
+using SalesManagement.Api.Shared.Extensions;
+
 using SalesManagement.Api.Features.Users;
 using SalesManagement.Api.Features.Auth;
+using SalesManagement.Api.Features.Auth.Services;
+using SalesManagement.Api.Features.Customers;
+
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +24,8 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+           .UseSnakeCaseNamingConvention(); //パスカルケースをスネークケースに自動変換
 });
 
 builder.Services.AddCors(options =>
@@ -34,6 +41,8 @@ builder.Services.AddCors(options =>
 
 // DI登録
 builder.Services.AddScoped<JwtTokenService>();
+
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 // Authentication登録
 builder.Services
@@ -84,8 +93,16 @@ app.MapGet("/health", () =>
 
 var api = app.MapGroup("/api");
 
-api.MapGroup("/users").MapUserEndpoints();
-api.MapGroup("/auth").MapAuthEndpoints();
+api.MapGroup("/auth")
+    .MapAuthEndpoints();
+
+api.MapGroup("/users")
+    .RequireAuthorization()
+    .MapUserEndpoints();
+
+api.MapGroup("/customers")
+    .RequireAuthorization()
+    .MapCustomerEndpoints();
 
 api.MapGet("/me", [Authorize] (ClaimsPrincipal user) =>
 {

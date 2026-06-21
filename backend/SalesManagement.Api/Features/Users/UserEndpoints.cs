@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SalesManagement.Api.Infrastructure.Persistence;
-using SalesManagement.Api.Domain.Users;
+using SalesManagement.Api.Domain.Entities;
 
 namespace SalesManagement.Api.Features.Users;
 
@@ -8,7 +8,7 @@ public static class UserEndpoints
 {
     public static RouteGroupBuilder MapUserEndpoints(this RouteGroupBuilder group)
     {
-        group.RequireAuthorization();
+        //group.RequireAuthorization();
 
         group.MapGet("/", GetUsers);
         group.MapPost("/", CreateUser);

@@ -1,12 +1,15 @@
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 
 using Microsoft.EntityFrameworkCore;
 
-using SalesManagement.Api.Domain.Auth;
-using SalesManagement.Api.Domain.Users;
+using SalesManagement.Api.Domain.Entities;
 using SalesManagement.Api.Infrastructure.Persistence;
+using SalesManagement.Api.Shared.Security;
+using SalesManagement.Api.Shared.Extensions;
+
+using SalesManagement.Api.Features.Auth.Services;
+using SalesManagement.Api.Features.Auth.Requests;
+using SalesManagement.Api.Features.Auth.Responses;
 
 namespace SalesManagement.Api.Features.Auth;
 
@@ -24,7 +27,7 @@ public static class AuthEndpoints
         // 新しいトークンを送信
         group.MapPost("/refresh", Refresh);
 
-        // ログアウト
+        // ログアウト 認証済み判定は要らない気はする
         group.MapPost("/logout", Logout).RequireAuthorization();
 
         return group;
@@ -154,7 +157,7 @@ public static class AuthEndpoints
         await db.SaveChangesAsync();
 
         // 成功
-        return Results.Ok(new
+        return Results.Ok(new VerifyOtpResponse
         {
             AccessToken = accessToken,
             RefreshToken = refreshToken
@@ -212,7 +215,7 @@ public static class AuthEndpoints
         await db.SaveChangesAsync();            
 
         // 成功
-        return Results.Ok(new
+        return Results.Ok(new RefreshTokenResponse
         {
             AccessToken = accessToken,
             RefreshToken = newRefreshToken
