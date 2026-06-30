@@ -1,30 +1,29 @@
 import { apiClient } from './axios'
 import type { PagedResult } from '@/types/common/pagedResult'
-import type { Customer } from '@/types/customers/customer'
+import type { CustomerListItemDto } from '@/types/customers/customerListItemDto'
 import type { CustomerSearchRequest } from '@/types/customers/customerSearchRequest'
 import type { CreateCustomerRequest } from '@/types/customers/createCustomerRequest'
 import type { UpdateCustomerRequest } from '@/types/customers/updateCustomerRequest'
+import type { CustomerEditDto } from '@/types/customers/customerEditDto'
+import type { LookupItemDto } from '@/types/common/lookupItemDto'
 
 // 顧客リスト検索
 export const getCustomers = async (request: CustomerSearchRequest) => {
-  const response = await apiClient.get<PagedResult<Customer>>('/customers', {
+  const response = await apiClient.get<PagedResult<CustomerListItemDto>>('/customers', {
     params: request,
   })
-
   return response.data
 }
 
 // 顧客追加
 export const createCustomer = async (request: CreateCustomerRequest) => {
   const response = await apiClient.post('/customers', request)
-
   return response.data
 }
 
 // 顧客取得
 export const getCustomer = async (id: string) => {
-  const response = await apiClient.get(`/customers/${id}`)
-
+  const response = await apiClient.get<CustomerEditDto>(`/customers/${id}`)
   return response.data
 }
 
@@ -36,4 +35,10 @@ export const updateCustomer = async (id: string, request: UpdateCustomerRequest)
 // 顧客削除
 export const deleteCustomer = async (id: string) => {
   await apiClient.delete(`/customers/${id}`)
+}
+
+
+export const getCustomerLookup = async (): Promise<LookupItemDto[]> => {
+  const response = await apiClient.get<LookupItemDto[]>('/customers/lookup')
+  return response.data
 }

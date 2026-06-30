@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { getCustomers, deleteCustomer } from '@/api/customerApi'
-import type { Customer } from '@/types/customers/customer'
+import type { CustomerListItemDto } from '@/types/customers/customerListItemDto'
 
-const customers = ref<Customer[]>([])
+const customers = ref<CustomerListItemDto[]>([])
 
 const customerCode = ref('')
 const customerName = ref('')

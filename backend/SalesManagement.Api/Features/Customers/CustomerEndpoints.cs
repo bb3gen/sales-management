@@ -10,6 +10,7 @@ using SalesManagement.Api.Features.Customers.Responses;
 using SalesManagement.Api.Shared.Dtos;
 using SalesManagement.Api.Shared.Extensions;
 using SalesManagement.Api.Shared.Messages;
+using SalesManagement.Api.Shared.Validation;
 
 namespace SalesManagement.Api.Features.Customers;
 
@@ -24,6 +25,7 @@ public static class CustomerEndpoints
         group.MapGet("/{id:guid}", GetCustomer);
         group.MapPut("/{id:guid}", UpdateCustomer);
         group.MapDelete("/{id:guid}", DeleteCustomer);
+       group.MapGet("/lookup", GetCustomerLookup);
 
         return group;
     }
@@ -94,7 +96,7 @@ public static class CustomerEndpoints
 
         if (!validationResult.IsValid)
         {
-            return Results.ValidationProblem(validationResult.ToDictionary());
+            return Results.ValidationProblem(validationResult.ToCamelCaseDictionary());
         }
 
         var userId = user.GetUserId();
@@ -128,11 +130,6 @@ public static class CustomerEndpoints
         db.Customers.Add(customer);
 
         await db.SaveChangesAsync();
-
-
-        // return Results.Created(
-        //     $"/api/customers/{customer.Id}",
-        //     customer);
 
         return Results.Created(
             $"/customers/{customer.Id}",
@@ -181,7 +178,7 @@ public static class CustomerEndpoints
 
         if (!validationResult.IsValid)
         {
-            return Results.ValidationProblem(validationResult.ToDictionary());
+            return Results.ValidationProblem(validationResult.ToCamelCaseDictionary());
         }
 
         var customer = await db.Customers.FirstOrDefaultAsync(x =>x.Id == id && !x.IsDeleted);
@@ -232,4 +229,21 @@ public static class CustomerEndpoints
 
         return Results.NoContent();
     }
+
+    private static async Task<IResult> GetCustomerLookup(AppDbContext db)
+    {
+        var items = await db.Customers
+            .AsNoTracking()
+            .Where(x => !x.IsDeleted)
+            .OrderBy(x => x.CustomerCode)
+            .Select(x => new LookupItemDto
+            {
+                Id = x.Id,
+                Code = x.CustomerCode,
+                Name = x.CustomerName
+            })
+            .ToListAsync();
+
+        return Results.Ok(items);
+    }    
 }

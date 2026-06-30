@@ -9,4 +9,7 @@ public static class ValidationMessages
 
     public const string Email =
         "メールアドレスの形式が正しくありません";
+
+    public const string GreaterThan =
+        "{PropertyName}は{ComparisonValue}より大きい値を入力してください";        
 }

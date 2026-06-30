@@ -1,4 +1,4 @@
-export interface Customer {
+export interface CustomerEditDto {
   id: string
   customerCode: string
   customerName: string
@@ -7,7 +7,5 @@ export interface Customer {
   address?: string
   phoneNumber?: string
   email?: string
-
-  createdAt: string
   updatedAt: string
 }

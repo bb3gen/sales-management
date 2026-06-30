@@ -13,6 +13,8 @@ using SalesManagement.Api.Features.Users;
 using SalesManagement.Api.Features.Auth;
 using SalesManagement.Api.Features.Auth.Services;
 using SalesManagement.Api.Features.Customers;
+using SalesManagement.Api.Features.Products;
+using SalesManagement.Api.Features.Orders;
 
 using FluentValidation;
 
@@ -103,6 +105,14 @@ api.MapGroup("/users")
 api.MapGroup("/customers")
     .RequireAuthorization()
     .MapCustomerEndpoints();
+
+api.MapGroup("/products")
+    .RequireAuthorization()
+    .MapProductEndpoints();
+
+api.MapGroup("/orders")
+    .RequireAuthorization()
+    .MapOrderEndpoints();
 
 api.MapGet("/me", [Authorize] (ClaimsPrincipal user) =>
 {

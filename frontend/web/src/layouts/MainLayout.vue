@@ -21,6 +21,8 @@ const logout = async () => {
           <RouterLink to="/" class="nav-link"> Home </RouterLink>
 
           <RouterLink to="/customers" class="nav-link"> 顧客管理 </RouterLink>
+          <RouterLink to="/products" class="nav-link"> 商品管理 </RouterLink>
+          <RouterLink to="/orders" class="nav-link"> 注文管理 </RouterLink>
 
           <a href="#" class="nav-link" @click.prevent="logout"> ログアウト </a>
         </div>

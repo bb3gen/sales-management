@@ -29,6 +29,22 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 npm install
 ```
 
+## Environment Variables
+
+API requests use `VITE_API_BASE_URL`. Create local env files as needed:
+
+```sh
+# .env.development
+VITE_API_BASE_URL=http://localhost:5103/api
+```
+
+```sh
+# .env.production
+VITE_API_BASE_URL=https://example.com/api
+```
+
+The value should include the `/api` path. If omitted, the app uses `http://localhost:5103/api`.
+
 ### Compile and Hot-Reload for Development
 
 ```sh
